@@ -8,14 +8,47 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var shouldShowPopup : Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            VStack {
+                Button("Show Popup") {
+                    withAnimation(.easeIn) {
+                        shouldShowPopup.toggle()
+                    }
+                }
+            }
+            .padding()
+            .navigationTitle("Popup Navigation View")
+            .popupNavigationView(show: $shouldShowPopup,
+                                 horizontalPadding: 40,
+                                 verticalPadding: 200) {
+                taskView
+            }
         }
-        .padding()
+    }
+    
+    var taskView : some View {
+        List {
+            ForEach(tasks) { task in
+                NavigationLink(task.title) {
+                    Text(task.description)
+                }
+            }
+        }
+        .navigationTitle("Popup Navigation View")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Image(systemName: "xmark")
+                    .onTapGesture {
+                        withAnimation(.easeOut) {
+                            shouldShowPopup.toggle()
+                        }
+                    }
+            }
+        }
     }
 }
 
